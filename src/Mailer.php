@@ -23,6 +23,7 @@ use Mandrill_Error;
  *
  * @author Nicola Puddu <n.puddu@outlook.com>
  * @version 1.0
+ * @property Mandrill $mandrill
  */
 class Mailer extends BaseMailer
 {
@@ -99,13 +100,6 @@ class Mailer extends BaseMailer
         if (!in_array($this->templateLanguage, [self::LANGUAGE_MAILCHIMP, self::LANGUAGE_HANDLEBARS])) {
             throw new InvalidConfigException('"' . get_class($this) . '::templateLanguage" has an invalid value.');
         }
-
-        try {
-            $this->_mandrill = new Mandrill($this->_apikey);
-        } catch (\Exception $exc) {
-            \Yii::error($exc->getMessage());
-            throw new \Exception('an error occurred with your mailer. Please check the application logs.', 500);
-        }
     }
 
     /**
@@ -136,6 +130,15 @@ class Mailer extends BaseMailer
      */
     public function getMandrill()
     {
+        /** On long running jobs, I think that ch goes to 0 when curl gets timeout from server */
+        if (!$this->_mandrill || !$this->_mandrill->ch) {
+            try {
+                $this->_mandrill = new Mandrill($this->_apikey);
+            } catch (\Exception $exc) {
+                \Yii::error($exc->getMessage());
+                throw new \Exception('an error occurred with your mailer. Please check the application logs.', 500);
+            }
+        }
         return $this->_mandrill;
     }
 
@@ -188,7 +191,7 @@ class Mailer extends BaseMailer
         try {
             if ($this->useMandrillTemplates) {
                 return $this->wasMessageSentSuccesfully(
-                    $this->_mandrill->messages->sendTemplate(
+                    $this->getMandrill()->messages->sendTemplate(
                         $message->getTemplateName(),
                         $message->getTemplateContent(),
                         $message->getMandrillMessageArray(),
@@ -197,7 +200,7 @@ class Mailer extends BaseMailer
                 );
             } else {
                 return $this->wasMessageSentSuccesfully(
-                    $this->_mandrill->messages->send(
+                    $this->getMandrill()->messages->send(
                         $message->getMandrillMessageArray(),
                         $message->isAsync()
                     )
