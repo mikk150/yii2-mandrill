@@ -208,6 +208,10 @@ class Mailer extends BaseMailer
                 );
             }
         } catch (Mandrill_Error $e) {
+            // If Mandrill has timeout error, then set _mandrill to null, in order to reconnect
+            if (curl_errno($this->_mandrill->ch) === CURLE_OPERATION_TIMEOUTED) {
+                $this->_mandrill = null;
+            }
             Yii::error('A mandrill error occurred: ' . get_class($e) . ' - ' . $e->getMessage(), self::LOG_CATEGORY);
             return false;
         }
