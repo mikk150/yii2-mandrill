@@ -40,7 +40,7 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
     public function testMessageSetTags()
     {
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->setTags('tag1'));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->setTags(array('tag1','tag2','tag3')));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->setTags(['tag1', 'tag2', 'tag3']));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->setTags('_tag5'));
 
         $tags = $this->_message->getTags();
@@ -89,8 +89,10 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
             ]
         ], $this->_message->getGlobalMergeVars());
 
-        $this->assertEquals(\nickcv\mandrill\Message::LANGUAGE_HANDLEBARS,
-            $this->_message->getMandrillMessageArray()['merge_language']);
+        $this->assertEquals(
+            \nickcv\mandrill\Message::LANGUAGE_HANDLEBARS,
+            $this->_message->getMandrillMessageArray()['merge_language']
+        );
     }
 
     public function testMessageSetRecipient()
@@ -195,11 +197,11 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
     public function testMessageAttach()
     {
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attach($this->getTestImagePath()));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attach($this->getTestImagePath(), ['fileName'=>'test2.png','contentType'=>'text/html']));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attach(__DIR__.DIRECTORY_SEPARATOR.'asdf.png'));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attach($this->getTestImagePath(), ['fileName' => 'test2.png','contentType' => 'text/html']));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attach(__DIR__ . DIRECTORY_SEPARATOR . 'asdf.png'));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attach(__DIR__));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attachContent($this->getTestPdfBinary()));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attachContent($this->getTestPdfBinary(),['fileName'=>'12.txt','contentType'=>'image/png']));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->attachContent($this->getTestPdfBinary(), ['fileName'=>'12.txt', 'contentType' => 'image/png']));
 
         $attachments = $this->_message->getAttachments();
         $this->assertCount(4, $attachments);
@@ -224,13 +226,13 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
     public function testMessageEmbed()
     {
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed($this->getTestImagePath()));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed($this->getTestImagePath(), ['fileName'=>'test2.png','contentType'=>'image/jpeg']));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed(__DIR__.DIRECTORY_SEPARATOR.'asdf.png'));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed($this->getTestImagePath(), ['fileName' => 'test2.png', 'contentType' => 'image/jpeg']));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed(__DIR__ . DIRECTORY_SEPARATOR . 'asdf.png'));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed(__DIR__));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embed($this->getTestPdfPath()));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embedContent('ancora un po'));
         $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embedContent($this->getTestImageBinary()));
-        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embedContent($this->getTestImageBinary(),['fileName'=>'12.txt','contentType'=>'text/html']));
+        $this->assertInstanceOf('\nickcv\mandrill\Message', $this->_message->embedContent($this->getTestImageBinary(), ['fileName' => '12.txt', 'contentType' => 'text/html']));
 
         $attachments = $this->_message->getEmbeddedContent();
         $this->assertCount(4, $attachments);
@@ -351,7 +353,7 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
                 ->disableClicksTracking()
                 ->disableOpensTracking()
                 ->setHtmlBody('<a>testo</a>')
-                ->attachContent($this->getTestPdfBinary(),['fileName'=>'12.txt','contentType'=>'image/png'])
+                ->attachContent($this->getTestPdfBinary(), ['fileName' => '12.txt', 'contentType' => 'image/png'])
                 ->embed($this->getTestImagePath());
         $this->assertInstanceOf('\nickcv\mandrill\Message', $result);
 
@@ -422,7 +424,7 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
                 ->disableClicksTracking()
                 ->disableOpensTracking()
                 ->setHtmlBody('<a>testo</a>')
-                ->attachContent($this->getTestPdfBinary(),['fileName'=>'12.txt','contentType'=>'image/png'])
+                ->attachContent($this->getTestPdfBinary(), ['fileName' => '12.txt', 'contentType' => 'image/png'])
                 ->embed($this->getTestImagePath());
         $this->assertInstanceOf('\nickcv\mandrill\Message', $result);
 
@@ -498,7 +500,7 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
      */
     private function getTestImagePath()
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'test.png';
+        return __DIR__ . DIRECTORY_SEPARATOR . 'test.png';
     }
 
     /**
@@ -507,8 +509,9 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
      */
     private function getTestImageBinary($encode = false)
     {
-        if ($this->_testImageBinary === null)
+        if ($this->_testImageBinary === null) {
             $this->_testImageBinary = file_get_contents($this->getTestImagePath());
+        }
 
         return $encode ? base64_encode($this->_testImageBinary) : $this->_testImageBinary;
     }
@@ -518,7 +521,7 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
      */
     private function getTestPdfPath()
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'test.pdf';
+        return __DIR__ . DIRECTORY_SEPARATOR . 'test.pdf';
     }
 
     /**
@@ -527,10 +530,10 @@ class MandrillMessageTest extends \Codeception\TestCase\Test
      */
     private function getTestPdfBinary($encode = false)
     {
-        if ($this->_testPdfBinary === null)
+        if ($this->_testPdfBinary === null) {
             $this->_testPdfBinary = file_get_contents($this->getTestPdfPath());
+        }
 
         return $encode ? base64_encode($this->_testPdfBinary) : $this->_testPdfBinary;
     }
-
 }

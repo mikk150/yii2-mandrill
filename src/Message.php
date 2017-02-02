@@ -810,10 +810,9 @@ class Message extends BaseMessage
     {
         $this->_templateName = $templateName;
 
+        $this->setGlobalMergeVars($templateContent);
         if ($templateLanguage === self::LANGUAGE_MAILCHIMP) {
             $this->_templateContent = $this->convertParamsForTemplate($templateContent);
-        } elseif ($templateLanguage === self::LANGUAGE_HANDLEBARS) {
-            $this->setGlobalMergeVars($templateContent);
         }
 
         $this->_mergeLanguage = $templateLanguage;

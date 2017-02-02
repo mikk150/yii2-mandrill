@@ -25,7 +25,7 @@ class MandrillTest extends \Codeception\TestCase\Test
     public function testApikeyMustBeString()
     {
         $this->setExpectedException('yii\base\InvalidConfigException', '"nickcv\mandrill\Mailer::apikey" should be a string, "array" given.');
-        new \nickcv\mandrill\Mailer(['apikey'=>array()]);
+        new \nickcv\mandrill\Mailer(['apikey' => []]);
     }
 
     public function testApikeyLengthGreaterThanZero()
@@ -108,8 +108,8 @@ class MandrillTest extends \Codeception\TestCase\Test
         $mandrill = new \nickcv\mandrill\Mailer([
             'apikey'=>'wq4uhYEddK1K3WXK8-Adsg',
             'useMandrillTemplates' => true,
-			'useTemplateDefaults' => false,
-			'templateLanguage' => \nickcv\mandrill\Mailer::LANGUAGE_HANDLEBARS,
+            'useTemplateDefaults' => false,
+            'templateLanguage' => \nickcv\mandrill\Mailer::LANGUAGE_HANDLEBARS,
         ]);
         $result = $mandrill->compose('testTemplateHandlebars', ['variable' => 'test content'])
             ->setFrom('testing@creationgears.com')
@@ -147,18 +147,18 @@ class MandrillTest extends \Codeception\TestCase\Test
         $this->assertFalse($result);
     }
 
-	public function testGetMandrill()
-	{
-		$mandrillMailer = new \nickcv\mandrill\Mailer(['apikey'=>'testing']);
-		$this->assertInstanceOf('\Mandrill', $mandrillMailer->getMandrill());
-	}
+    public function testGetMandrill()
+    {
+        $mandrillMailer = new \nickcv\mandrill\Mailer(['apikey'=>'testing']);
+        $this->assertInstanceOf('\Mandrill', $mandrillMailer->getMandrill());
+    }
 
     /**
      * @return string
      */
     private function getTestImagePath()
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'test.png';
+        return __DIR__ . DIRECTORY_SEPARATOR . 'test.png';
     }
 
     /**
@@ -166,7 +166,6 @@ class MandrillTest extends \Codeception\TestCase\Test
      */
     private function getTestPdfPath()
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'test.pdf';
+        return __DIR__ . DIRECTORY_SEPARATOR . 'test.pdf';
     }
-
 }
